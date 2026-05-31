@@ -1,0 +1,279 @@
+.page {
+  min-height: 100vh;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ── Header ── */
+.header {
+  background: linear-gradient(135deg, #FF6B00 0%, #E85D00 55%, #C94E00 100%);
+  padding: 32px 20px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(232,93,0,0.4);
+}
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M20 20v-8h-2v8h-8v2h8v8h2v-8h8v-2h-8z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.om {
+  font-family: 'Tiro Devanagari Sanskrit', serif;
+  font-size: 3rem;
+  color: #FFB300;
+  display: block;
+  margin-bottom: 8px;
+  animation: glow 2.5s ease-in-out infinite alternate;
+  position: relative;
+}
+@keyframes glow {
+  from { text-shadow: 0 0 10px rgba(255,179,0,0.5); }
+  to   { text-shadow: 0 0 28px rgba(255,179,0,1), 0 0 50px rgba(255,179,0,0.4); }
+}
+.header h1 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #fff;
+  position: relative;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.header p {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.83rem;
+  margin-top: 4px;
+  position: relative;
+}
+.badge {
+  display: inline-block;
+  background: #FFB300;
+  color: #2D1B00;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 16px;
+  border-radius: 20px;
+  margin-top: 12px;
+  position: relative;
+  letter-spacing: 0.3px;
+}
+
+/* ── Steps ── */
+.stepsBar {
+  display: flex;
+  justify-content: center;
+  padding: 20px 30px 0;
+  gap: 0;
+}
+.stepItem {
+  flex: 1;
+  text-align: center;
+  position: relative;
+}
+.stepItem:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 13px;
+  left: 60%;
+  right: -40%;
+  height: 2px;
+  background: #E8C87A;
+  z-index: 0;
+  transition: background 0.4s;
+}
+.stepItem.done:not(:last-child)::after { background: #FF6B00; }
+.stepCircle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #E8C87A;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700;
+  color: #8B6540;
+  position: relative; z-index: 1;
+  transition: all 0.3s;
+}
+.active .stepCircle { border-color: #FF6B00; color: #FF6B00; background: #FFF3E0; }
+.done .stepCircle   { background: #FF6B00; border-color: #FF6B00; color: #fff; }
+.stepLabel { font-size: 0.65rem; color: #8B6540; margin-top: 4px; font-weight: 500; }
+.active .stepLabel  { color: #FF6B00; font-weight: 700; }
+
+/* ── Card ── */
+.card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(45,27,0,0.10);
+  padding: 28px 22px 22px;
+  margin: 18px 14px 30px;
+  border: 1px solid rgba(232,200,122,0.45);
+  animation: slideUp 0.35s ease;
+}
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.sectionTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2D1B00;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #FFF3E0;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* ── Inputs (global via :global) ── */
+.card :global(input),
+.card :global(select) {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #E8C87A;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-family: 'Poppins', sans-serif;
+  color: #2D1B00;
+  background: #FFFDF5;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.card :global(input:focus),
+.card :global(select:focus) {
+  border-color: #FF6B00;
+  box-shadow: 0 0 0 3px rgba(255,107,0,0.12);
+  background: #fff;
+}
+.inputError {
+  border-color: #e53935 !important;
+}
+
+/* ── Payment Toggle ── */
+.payToggle { display: flex; gap: 12px; margin-bottom: 20px; }
+.payOpt {
+  flex: 1;
+  border: 2px solid #E8C87A;
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  background: #FFFDF5;
+  user-select: none;
+}
+.payOpt:hover { border-color: #FFB300; }
+.paySelected  { border-color: #FF6B00 !important; background: #FFF3E0 !important; }
+.payIcon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+.payName { font-size: 0.82rem; font-weight: 700; color: #3E2800; }
+.paySub  { font-size: 0.68rem; color: #8B6540; margin-top: 2px; }
+
+/* ── Buttons ── */
+.btnPrimary {
+  width: 100%; padding: 14px;
+  border: none; border-radius: 12px;
+  font-size: 0.97rem; font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, #FF6B00, #E85D00);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255,107,0,0.35);
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btnPrimary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(255,107,0,0.45); }
+.btnPrimary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.btnBack {
+  width: 100%; padding: 10px;
+  background: none; border: none;
+  color: #8B6540; font-size: 0.82rem;
+  cursor: pointer; margin-top: 10px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ── UPI ── */
+.amountBox {
+  background: linear-gradient(135deg, #FFF8E1, #FFF3E0);
+  border: 2px solid #FFB300;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.amount { font-size: 2.4rem; font-weight: 800; color: #FF6B00; }
+.amountLabel { font-size: 0.78rem; color: #8B6540; margin-top: 4px; }
+
+.upiGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.upiBtn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  border: 1.5px solid #E8C87A;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.83rem; font-weight: 600; color: #3E2800;
+  transition: all 0.2s;
+}
+.upiBtn:hover { border-color: #FF6B00; background: #FFF3E0; transform: translateY(-1px); }
+
+.divider {
+  text-align: center; color: #8B6540; font-size: 0.75rem;
+  margin: 16px 0; position: relative;
+}
+.divider::before, .divider::after {
+  content: ''; position: absolute; top: 50%;
+  width: 28%; height: 1px; background: #E8C87A;
+}
+.divider::before { left: 0; } .divider::after { right: 0; }
+
+/* ── Cash ── */
+.cashBox {
+  background: #E8F5E9; border: 1.5px solid #A5D6A7;
+  border-radius: 14px; padding: 24px 20px; text-align: center; margin-bottom: 20px;
+  color: #2E7D32; font-size: 0.88rem; line-height: 1.7;
+}
+
+/* ── Error ── */
+.apiError {
+  background: #FFEBEE; border: 1.5px solid #EF9A9A;
+  border-radius: 10px; padding: 12px 14px;
+  color: #C62828; font-size: 0.82rem; margin-bottom: 14px;
+}
+
+/* ── Spinner ── */
+.spinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 3px solid rgba(255,255,255,0.4);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Success ── */
+.successWrap { text-align: center; padding: 8px 0; }
+.successIcon {
+  width: 84px; height: 84px;
+  background: linear-gradient(135deg, #43A047, #2E7D32);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; margin: 0 auto 18px;
+  box-shadow: 0 8px 28px rgba(46,125,50,0.3);
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.successTitle { font-size: 1.4rem; font-weight: 800; color: #2E7D32; margin-bottom: 8px; }
+.successSub   { font-size: 0.85rem; color: #8B6540; line-height: 1.7; margin-bottom: 18px; }
+.regIdBox {
+  background: #FFF3E0; border: 2px dashed #FFB300;
+  border-radius: 12px; padding: 14px 18px; margin-bottom: 18px;
+}
+.regIdLabel { font-size: 0.72rem; color: #8B6540; margin-bottom: 4px; }
+.regIdVal   { font-size: 1.2rem; font-weight: 800; color: #2D1B00; letter-spacing: 2px; }
+.successMeta {
+  background: #FFFDF5; border: 1px solid #E8C87A;
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
+  text-align: left; font-size: 0.82rem; color: #3E2800;
+  display: flex; flex-direction: column; gap: 6px;
+}

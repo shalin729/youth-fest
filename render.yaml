@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: religious-registration
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: UPI_ID
+        sync: false
+      - key: UPI_PAYEE_NAME
+        sync: false
+      - key: GOOGLE_SHEET_URL
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: NODE_ENV
+        value: production

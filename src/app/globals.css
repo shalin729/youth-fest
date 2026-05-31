@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --saffron: #FF6B00;
+  --deep-saffron: #E85D00;
+  --gold: #FFB300;
+  --light-gold: #FFF3E0;
+  --cream: #FFFDF5;
+  --dark: #2D1B00;
+  --text: #3E2800;
+  --muted: #8B6540;
+  --success: #2E7D32;
+  --border: #E8C87A;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--cream);
+  min-height: 100vh;
+  color: var(--text);
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255,179,0,0.12) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255,107,0,0.08) 0%, transparent 40%);
+}
+
+input, select, button, textarea {
+  font-family: 'Poppins', sans-serif;
+}
