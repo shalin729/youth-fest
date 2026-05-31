@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 
-const razorpay = new Razorpay({
-  key_id:     process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
+// Force dynamic — prevents Next.js from trying to pre-render this route at build time
+export const dynamic = "force-dynamic";
 
 // POST /api/payment/create-order
-// Creates a Razorpay order for ₹50 and returns the order details to the frontend
 export async function POST(req: NextRequest) {
   try {
+    // Initialize Razorpay lazily so missing env vars don't break the build
+    const razorpay = new Razorpay({
+      key_id:     process.env.RAZORPAY_KEY_ID!,
+      key_secret: process.env.RAZORPAY_KEY_SECRET!,
+    });
+
     const body = await req.json();
     const { name, mobile } = body;
 

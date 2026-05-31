@@ -3,6 +3,10 @@ import crypto from "crypto";
 import connectDB from "@/lib/mongodb";
 import Registration from "@/models/Registration";
 
+// Force dynamic — prevents Next.js from trying to pre-render this route at build time
+export const dynamic = "force-dynamic";
+
+
 function generateRegId() {
   return "REG-" + Math.floor(100000 + Math.random() * 900000);
 }

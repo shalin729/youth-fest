@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Registration from "@/models/Registration";
 
+export const dynamic = "force-dynamic";
+
 function generateRegId() {
   return "REG-" + Math.floor(100000 + Math.random() * 900000);
 }
