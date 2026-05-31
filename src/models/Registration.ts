@@ -14,6 +14,7 @@ export interface IRegistration extends Document {
   amount: number;
   razorpayOrderId?: string;
   razorpayPaymentId?: string;
+  customField1?: string;
   customField2?: string;
   isDraft: boolean;
   isDeleted: boolean;
