@@ -21,9 +21,16 @@ async function connectDB() {
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
+      family: 4, // Force IPv4, often fixes local DNS/querySrv timeouts
+    }).then((mongoose) => {
+      console.log("✅ MongoDB connected successfully");
+      return mongoose;
+    }).catch((err) => {
+      console.error("❌ MongoDB connection failed:", err.message);
+      cached.promise = null; // Reset promise so it can retry
+      throw err;
     });
   }
-
   cached.conn = await cached.promise;
   return cached.conn;
 }

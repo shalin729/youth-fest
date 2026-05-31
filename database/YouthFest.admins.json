@@ -1,0 +1,14 @@
+[{
+  "_id": {
+    "$oid": "6a1c667a46afe893941c415f"
+  },
+  "username": "admin",
+  "passwordHash": "$2b$10$Mmtna7Zh86MAHqyRTp8D0OV3KBAtf5ndbORkGqvaExUj38cDzxT6y",
+  "createdAt": {
+    "$date": "2026-05-31T16:48:58.821Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-31T16:48:58.821Z"
+  },
+  "__v": 0
+}]

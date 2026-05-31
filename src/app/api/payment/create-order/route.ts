@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
+import connectDB from "@/lib/mongodb";
+import Registration from "@/models/Registration";
+import Settings from "@/models/Settings";
 
 // Force dynamic — prevents Next.js from trying to pre-render this route at build time
 export const dynamic = "force-dynamic";
@@ -14,14 +17,22 @@ export async function POST(req: NextRequest) {
     });
 
     const body = await req.json();
-    const { name, mobile } = body;
+    const { name, mobile, paymentMethod, email, district, village, mandali } = body;
 
     if (!name || !mobile) {
       return NextResponse.json({ error: "Missing name or mobile" }, { status: 400 });
     }
+    if (!/^[6-9]\d{9}$/.test(mobile)) {
+      return NextResponse.json({ error: "Invalid mobile number" }, { status: 400 });
+    }
+
+    await connectDB();
+
+    const settings = await Settings.findOne({}) || { onlineFee: 10 };
+    const onlineFee = settings.onlineFee || 10;
 
     const order = await razorpay.orders.create({
-      amount:   5000,      // ₹50 in paise (1 INR = 100 paise)
+      amount:   onlineFee * 100,      // dynamic fee in paise (1 INR = 100 paise)
       currency: "INR",
       receipt:  `rcpt_${mobile}_${Date.now()}`,
       notes: {

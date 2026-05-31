@@ -7,13 +7,16 @@ export interface IRegistration extends Document {
   email: string;
   village: string;
   district: string;
-  mandal: string;
+  mandali: string;
   paymentMethod: "online" | "cash";
   paymentStatus: "pending" | "paid" | "failed";
   txnId?: string;
   amount: number;
   razorpayOrderId?: string;
   razorpayPaymentId?: string;
+  customField2?: string;
+  isDraft: boolean;
+  isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,13 +29,17 @@ const RegistrationSchema = new Schema<IRegistration>(
     email: { type: String, default: "N/A", trim: true },
     village: { type: String, required: true, trim: true },
     district: { type: String, required: true, trim: true },
-    mandal: { type: String, required: true, trim: true },
+    mandali: { type: String, required: true, trim: true },
     paymentMethod: { type: String, enum: ["online", "cash"], required: true },
     paymentStatus: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
     txnId: { type: String, default: "" },
     amount: { type: Number, default: 50 },
     razorpayOrderId: { type: String, default: "" },
     razorpayPaymentId: { type: String, default: "" },
+    customField1: { type: String },
+    customField2: { type: String },
+    isDraft: { type: Boolean, default: true },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import connectDB from "@/lib/mongodb";
 import Registration from "@/models/Registration";
+import Settings from "@/models/Settings";
 
 // Force dynamic — prevents Next.js from trying to pre-render this route at build time
 export const dynamic = "force-dynamic";
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
       razorpay_payment_id,
       razorpay_signature,
       // Form data
-      name, mobile, email, district, village, mandal,
+      regId, name, mobile, email, district, village, mandali, customField1, customField2
     } = body;
 
     // ── Step 1: Verify the HMAC-SHA256 signature ──────────────────────────
@@ -42,32 +43,31 @@ export async function POST(req: NextRequest) {
     // ── Step 2: Save registration to DB ───────────────────────────────────
     await connectDB();
 
-    // Check duplicate mobile
-    const existing = await Registration.findOne({ mobile });
-    if (existing) {
-      return NextResponse.json(
-        { error: "This mobile number is already registered", regId: existing.regId },
-        { status: 409 }
-      );
+
+
+    const settings = await Settings.findOne({}) || { onlineFee: 10 };
+    const onlineFee = settings.onlineFee || 10;
+
+    if (!regId) {
+      return NextResponse.json({ error: "Missing regId. Registration not initiated properly." }, { status: 400 });
     }
 
-    const regId = generateRegId();
+    const registration = await Registration.findOneAndUpdate(
+      { regId },
+      {
+        paymentStatus:  "paid",       // Verified by Razorpay — guaranteed paid
+        txnId:          razorpay_payment_id,
+        amount:         onlineFee,
+        razorpayOrderId:   razorpay_order_id,
+        razorpayPaymentId: razorpay_payment_id,
+        isDraft:        false,
+      },
+      { new: true }
+    );
 
-    const registration = await Registration.create({
-      regId,
-      name,
-      mobile,
-      email: email || "N/A",
-      district,
-      village,
-      mandal,
-      paymentMethod:  "online",
-      paymentStatus:  "paid",       // Verified by Razorpay — guaranteed paid
-      txnId:          razorpay_payment_id,
-      amount:         50,
-      razorpayOrderId:   razorpay_order_id,
-      razorpayPaymentId: razorpay_payment_id,
-    });
+    if (!registration) {
+      return NextResponse.json({ error: "Original registration not found" }, { status: 404 });
+    }
 
     // Optional: sync to Google Sheets
     const sheetUrl = process.env.GOOGLE_SHEET_URL;
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
             email: email || "N/A",
             district,
             village,
-            mandal,
+            mandali,
             payment:  "online (Razorpay)",
             txnId:    razorpay_payment_id,
             status:   "paid",

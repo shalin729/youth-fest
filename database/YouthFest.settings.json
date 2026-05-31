@@ -1,0 +1,47 @@
+[{
+  "_id": {
+    "$oid": "6a1c5db1c1406922876b340a"
+  },
+  "onlineFee": 10,
+  "cashFee": 10,
+  "registrationsOpen": true,
+  "formTitle": "Youth Fest 07 JUNE 2026 9 AM - 4 PM Program",
+  "personalInfoHeading": "📝 Personal Information",
+  "locationDetailsHeading": "📍 Location Details",
+  "paymentMethodHeading": "💳 Payment Method",
+  "fieldsConfig": {
+    "email": {
+      "enabled": true,
+      "required": false,
+      "label": "Email ID"
+    },
+    "district": {
+      "enabled": true,
+      "required": true,
+      "label": "District"
+    },
+    "village": {
+      "enabled": true,
+      "required": true,
+      "label": "Village Name"
+    },
+    "mandal": {
+      "enabled": true,
+      "required": true,
+      "label": "Mandal Name"
+    },
+    "mandali": {
+      "enabled": true,
+      "required": true,
+      "label": "Mandali Name"
+    }
+  },
+  "customFields": [],
+  "createdAt": {
+    "$date": "2026-05-31T16:11:29.836Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-31T16:54:18.892Z"
+  },
+  "__v": 0
+}]

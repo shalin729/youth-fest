@@ -148,23 +148,66 @@
 }
 
 /* ── Payment Toggle ── */
-.payToggle { display: flex; gap: 12px; margin-bottom: 20px; }
+.payToggle { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
 .payOpt {
-  flex: 1;
-  border: 2px solid #E8C87A;
-  border-radius: 14px;
-  padding: 14px 10px;
-  text-align: center;
+  position: relative;
+  border: 1.5px solid #E8C87A;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
   cursor: pointer;
-  transition: all 0.25s;
+  transition: all 0.2s ease;
   background: #FFFDF5;
   user-select: none;
 }
-.payOpt:hover { border-color: #FFB300; }
-.paySelected  { border-color: #FF6B00 !important; background: #FFF3E0 !important; }
-.payIcon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
-.payName { font-size: 0.82rem; font-weight: 700; color: #3E2800; }
-.paySub  { font-size: 0.68rem; color: #8B6540; margin-top: 2px; }
+.payOpt::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #E8C87A;
+  background: #FFF;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+.paySelected::before {
+  border-color: #FF6B00;
+  background: #FF6B00;
+  box-shadow: inset 0 0 0 3px #FFF;
+}
+.payOpt:hover { 
+  border-color: #FFB300; 
+  background: #FFF;
+}
+.paySelected { 
+  border-color: #FF6B00 !important; 
+  background: #FFF8EC !important; 
+}
+.payIcon { 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #FFF;
+  border-radius: 8px;
+  border: 1px solid #E8C87A;
+  color: #FF6B00;
+  flex-shrink: 0;
+}
+.paySelected .payIcon {
+  border-color: #FFB300;
+  background: #FFF4E6;
+}
+.payTextWrap {
+  flex: 1;
+  text-align: left;
+}
+.payName { font-size: 0.95rem; font-weight: 700; color: #2D1B00; margin-bottom: 2px; }
+.paySub  { font-size: 0.75rem; color: #8B6540; line-height: 1.3; }
 
 /* ── Buttons ── */
 .btnPrimary {
