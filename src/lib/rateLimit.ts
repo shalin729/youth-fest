@@ -5,11 +5,11 @@ export function checkRateLimit(ip: string, limit: number, windowMs: number): boo
   
   // Cleanup expired entries periodically (randomized to spread CPU load)
   if (Math.random() < 0.1) {
-    for (const [key, value] of rateLimitMap.entries()) {
+    rateLimitMap.forEach((value, key) => {
       if (value.expiresAt < now) {
         rateLimitMap.delete(key);
       }
-    }
+    });
   }
 
   const record = rateLimitMap.get(ip);
