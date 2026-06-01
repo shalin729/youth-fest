@@ -561,7 +561,7 @@ export default function RegisterPage() {
               {/* Amount box */}
               <div className={styles.amountBox}>
                 <div className={styles.amount}>₹{settings?.onlineFee || 10}</div>
-                <div className={styles.amountLabel}>Registration Fee • 2-Day Program</div>
+                <div className={styles.amountLabel}>Registration Fee • 1-Day Program</div>
               </div>
 
               {/* What Razorpay supports */}
@@ -632,7 +632,7 @@ export default function RegisterPage() {
             <h2 className={styles.successTitle}>Registration Successful!</h2>
             <p className={styles.successSub}>
               You are registered for the <br/>
-              <strong>{settings?.formTitle || "YouthFest 2-Day Program"}</strong>.<br/>
+              <strong>{settings?.formTitle || "YouthFest 1-Day Program"}</strong>.<br/>
               See you at the event! 🎉
             </p>
             <div className={styles.regIdBox}>

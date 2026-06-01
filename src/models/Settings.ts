@@ -57,7 +57,7 @@ const SettingsSchema = new Schema<ISettings>(
     cashFee: { type: Number, required: true, default: 10 },
     allowedPaymentMethods: { type: [String], default: ["online", "cash"] },
     registrationsOpen: { type: Boolean, required: true, default: true },
-    formTitle: { type: String, required: true, default: "YouthFest 2-Day Program" },
+    formTitle: { type: String, required: true, default: "YouthFest 1-Day Program" },
     personalInfoHeading: { type: String, required: true, default: "📝 Personal Information" },
     locationDetailsHeading: { type: String, required: true, default: "📍 Location Details" },
     paymentMethodHeading: { type: String, required: true, default: "💳 Payment Method" },

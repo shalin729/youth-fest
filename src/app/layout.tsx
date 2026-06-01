@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "YouthFest Registration",
-  description: "YouthFest 2-Day Program Registration Form",
+  description: "YouthFest 1-Day Program Registration Form",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

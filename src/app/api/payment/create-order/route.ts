@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       notes: {
         name,
         mobile,
-        event: "YouthFest 2-Day Program",
+        event: "YouthFest 1-Day Program",
       },
     });
 
