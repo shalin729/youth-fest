@@ -3,6 +3,7 @@ import Razorpay from "razorpay";
 import connectDB from "@/lib/mongodb";
 import Registration from "@/models/Registration";
 import Settings from "@/models/Settings";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 // Force dynamic — prevents Next.js from trying to pre-render this route at build time
 export const dynamic = "force-dynamic";
@@ -24,6 +25,15 @@ export async function POST(req: NextRequest) {
     }
     if (!/^[6-9]\d{9}$/.test(mobile)) {
       return NextResponse.json({ error: "Invalid mobile number" }, { status: 400 });
+    }
+
+    if (name.length > 100) {
+      return NextResponse.json({ error: "Name is too long" }, { status: 400 });
+    }
+
+    const ip = getClientIp(req);
+    if (!checkRateLimit(ip, 5, 60000)) { // 5 requests per minute
+      return NextResponse.json({ error: "Too many payment attempts. Please try again later." }, { status: 429 });
     }
 
     await connectDB();

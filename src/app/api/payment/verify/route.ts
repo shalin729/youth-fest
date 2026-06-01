@@ -52,6 +52,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing regId. Registration not initiated properly." }, { status: 400 });
     }
 
+    const existingReg = await Registration.findOne({ regId });
+    if (!existingReg) {
+      return NextResponse.json({ error: "Original registration not found" }, { status: 404 });
+    }
+
+    // ── Idempotency Check (Prevent Replay Attacks) ──
+    if (existingReg.paymentStatus === "paid") {
+      return NextResponse.json({ error: "Payment already verified for this registration." }, { status: 400 });
+    }
+
+    // ── Uniqueness Check ──
+    const duplicateTxn = await Registration.findOne({ txnId: razorpay_payment_id });
+    if (duplicateTxn) {
+      return NextResponse.json({ error: "This transaction ID has already been used." }, { status: 400 });
+    }
+
     const registration = await Registration.findOneAndUpdate(
       { regId },
       {
@@ -94,8 +110,16 @@ export async function POST(req: NextRequest) {
         console.warn("Google Sheets sync failed:", e);
       }
     }
+    // Mask the returned document
+    const safeRegistration = {
+      regId: registration.regId,
+      name: registration.name,
+      paymentMethod: registration.paymentMethod,
+      paymentStatus: registration.paymentStatus,
+      amount: registration.amount
+    };
 
-    return NextResponse.json({ success: true, regId, registration }, { status: 201 });
+    return NextResponse.json({ success: true, regId, registration: safeRegistration }, { status: 201 });
   } catch (err: any) {
     console.error("Payment verify error:", err);
     return NextResponse.json({ error: "Server error", details: err.message }, { status: 500 });

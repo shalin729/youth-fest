@@ -24,7 +24,8 @@ export default function RegistrationsPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading]             = useState(false);
   const [search, setSearch]               = useState("");
-  const [filter, setFilter]               = useState("all");
+  const [statusFilter, setStatusFilter]   = useState("all");
+  const [methodFilter, setMethodFilter]   = useState("all");
   const [updating, setUpdating]           = useState<string | null>(null);
   
   const [viewTrash, setViewTrash]         = useState(false);
@@ -87,10 +88,11 @@ export default function RegistrationsPage() {
   const filtered = registrations.filter(r => {
     if (viewTrash && !r.isDeleted) return false;
     if (!viewTrash && r.isDeleted) return false;
-    const matchFilter = filter === "all" || r.paymentStatus === filter || r.paymentMethod === filter;
+    const matchStatus = statusFilter === "all" || r.paymentStatus === statusFilter;
+    const matchMethod = methodFilter === "all" || r.paymentMethod === methodFilter;
     const matchSearch = !search || [r.name, r.mobile, r.village, r.mandali, r.regId]
       .some(v => v?.toLowerCase().includes(search.toLowerCase()));
-    return matchFilter && matchSearch;
+    return matchStatus && matchMethod && matchSearch;
   });
 
   const exportToCSV = () => {
@@ -222,10 +224,13 @@ export default function RegistrationsPage() {
         <div className="card-wrap">
           <div className="toolbar">
             <input className="search-input" placeholder="Search name, mobile, village..." value={search} onChange={e => setSearch(e.target.value)} />
-            <select className="filter-select" value={filter} onChange={e => setFilter(e.target.value)}>
-              <option value="all">All</option>
+            <select className="filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+              <option value="all">All Statuses</option>
               <option value="paid">Paid Only</option>
               <option value="pending">Pending Only</option>
+            </select>
+            <select className="filter-select" value={methodFilter} onChange={e => setMethodFilter(e.target.value)}>
+              <option value="all">All Methods</option>
               <option value="online">Online Method</option>
               <option value="cash">Cash Method</option>
             </select>
@@ -242,6 +247,7 @@ export default function RegistrationsPage() {
                 <th>Participant</th>
                 <th>Contact</th>
                 <th>Location</th>
+                <th>Amount</th>
                 <th>Payment</th>
                 <th>Actions</th>
               </tr>
@@ -260,6 +266,9 @@ export default function RegistrationsPage() {
                   <td>
                     <div>{r.village}, {r.mandali}</div>
                     <div style={{fontSize:"0.8rem", color:"#6B7280"}}>{r.district}</div>
+                  </td>
+                  <td>
+                    <div style={{fontWeight: 600, color: "#111827"}}>₹{r.amount || 0}</div>
                   </td>
                   <td>
                     <div style={{display:"flex", gap:"8px", alignItems:"center", marginBottom:"4px"}}>
@@ -296,7 +305,7 @@ export default function RegistrationsPage() {
               ))}
               {filtered.length === 0 && !loading && (
                 <tr>
-                  <td colSpan={5} style={{textAlign:"center", padding:"48px", color:"#6B7280"}}>No registrations found matching your criteria.</td>
+                  <td colSpan={6} style={{textAlign:"center", padding:"48px", color:"#6B7280"}}>No registrations found matching your criteria.</td>
                 </tr>
               )}
             </tbody>
@@ -320,6 +329,7 @@ export default function RegistrationsPage() {
                   <div className="mc-meta-row"><span style={{width:"20px"}}>📞</span> {r.mobile}</div>
                   {r.email && <div className="mc-meta-row"><span style={{width:"20px"}}>✉️</span> {r.email}</div>}
                   <div className="mc-meta-row"><span style={{width:"20px"}}>📍</span> {r.village}, {r.mandali} ({r.district})</div>
+                  <div className="mc-meta-row"><span style={{width:"20px"}}>💰</span> ₹{r.amount || 0}</div>
                   <div className="mc-meta-row"><span style={{width:"20px"}}>💳</span> {r.paymentMethod === 'online' ? 'Online' : 'Cash'} {r.txnId ? `• ${r.txnId}` : ''}</div>
                 </div>
 

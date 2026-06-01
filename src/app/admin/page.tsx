@@ -126,8 +126,9 @@ export default function AdminPage() {
   return (
     <>
       <style>{`
-        body { margin: 0; background-color: #F9FAFB; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        .page-container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background-color: #F9FAFB; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; overflow-x: hidden; }
+        .page-container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; width: 100%; }
         
         .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
         .title { font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0; }
@@ -153,9 +154,9 @@ export default function AdminPage() {
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
         @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
         
-        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; width: 100%; }
         .form-label { font-size: 0.875rem; font-weight: 600; color: #374151; }
-        .form-input { padding: 10px 14px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 0.875rem; outline: none; transition: all 0.2s; }
+        .form-input { width: 100%; padding: 10px 14px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 0.875rem; outline: none; transition: all 0.2s; }
         .form-input:focus { border-color: #3B82F6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
         
         .core-fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px; background: #F9FAFB; border-radius: 8px; border: 1px solid #E5E7EB; margin-bottom: 24px; }

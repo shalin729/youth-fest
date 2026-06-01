@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Registration from "@/models/Registration";
 import Settings from "@/models/Settings";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
-
-function generateRegId() {
-  return "REG-" + Math.floor(100000 + Math.random() * 900000);
-}
 
 // POST /api/register — Save new registration
 export async function POST(req: NextRequest) {
@@ -26,11 +23,23 @@ export async function POST(req: NextRequest) {
     }
 
 
+    const ip = getClientIp(req);
+    if (!checkRateLimit(ip, 5, 60000)) { // 5 requests per minute
+      return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+    }
 
-    const settings = await Settings.findOne({}) || { onlineFee: 10, cashFee: 10 };
+    if (name.length > 100 || village?.length > 100 || district?.length > 100 || mandali?.length > 100) {
+      return NextResponse.json({ error: "Input fields exceed maximum length" }, { status: 400 });
+    }
+
+    const settings = await Settings.findOneAndUpdate(
+      {},
+      { $inc: { lastRegSeq: 1 } },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
     const fee = paymentMethod === "cash" ? (settings.cashFee || 10) : (settings.onlineFee || 10);
 
-    const regId = generateRegId();
+    const regId = "REG-" + settings.lastRegSeq.toString().padStart(4, '0');
 
     const registration = await Registration.create({
       regId,
@@ -74,8 +83,16 @@ export async function POST(req: NextRequest) {
         console.warn("Google Sheets sync failed:", e);
       }
     }
+    // Mask the returned document
+    const safeRegistration = {
+      regId: registration.regId,
+      name: registration.name,
+      paymentMethod: registration.paymentMethod,
+      paymentStatus: registration.paymentStatus,
+      amount: registration.amount
+    };
 
-    return NextResponse.json({ success: true, regId, registration }, { status: 201 });
+    return NextResponse.json({ success: true, regId, registration: safeRegistration }, { status: 201 });
   } catch (err: any) {
     console.error("Registration error:", err);
     return NextResponse.json({ error: "Server error", details: err.message }, { status: 500 });
@@ -90,6 +107,14 @@ export async function PATCH(req: NextRequest) {
     const { regId, name, mobile, email, village, district, mandali, paymentMethod, customField1, customField2, confirmCash } = body;
 
     if (!regId) return NextResponse.json({ error: "Missing regId" }, { status: 400 });
+    const ip = getClientIp(req);
+    if (!checkRateLimit(ip, 10, 60000)) { // 10 updates per minute
+      return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+    }
+
+    if (name?.length > 100 || village?.length > 100 || district?.length > 100 || mandali?.length > 100) {
+      return NextResponse.json({ error: "Input fields exceed maximum length" }, { status: 400 });
+    }
 
     const settings = await Settings.findOne({}) || { onlineFee: 10, cashFee: 10 };
     const fee = paymentMethod === "cash" ? (settings.cashFee || 10) : (settings.onlineFee || 10);
@@ -112,8 +137,15 @@ export async function PATCH(req: NextRequest) {
     if (!registration) {
       return NextResponse.json({ error: "Registration not found" }, { status: 404 });
     }
+    const safeRegistration = {
+      regId: registration.regId,
+      name: registration.name,
+      paymentMethod: registration.paymentMethod,
+      paymentStatus: registration.paymentStatus,
+      amount: registration.amount
+    };
 
-    return NextResponse.json({ success: true, regId, registration });
+    return NextResponse.json({ success: true, regId, registration: safeRegistration });
   } catch (err: any) {
     console.error("Registration update error:", err);
     return NextResponse.json({ error: "Server error", details: err.message }, { status: 500 });

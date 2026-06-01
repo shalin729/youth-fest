@@ -33,6 +33,7 @@ export interface ISettings extends Document {
     mandali: IFieldConfig;
   };
   customFields: ICustomField[];
+  lastRegSeq: number;
 }
 
 const FieldConfigSchema = new Schema<IFieldConfig>({
@@ -69,6 +70,7 @@ const SettingsSchema = new Schema<ISettings>(
       mandali: { type: FieldConfigSchema, default: () => ({ enabled: true, required: true, label: "Mandali Name" }) },
     },
     customFields: { type: [CustomFieldSchema], default: [] },
+    lastRegSeq: { type: Number, required: true, default: 0 },
   },
   { timestamps: true }
 );
