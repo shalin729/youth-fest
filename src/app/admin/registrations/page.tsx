@@ -103,9 +103,9 @@ export default function RegistrationsPage() {
       `"${r.name}"`,
       r.mobile,
       r.email || "",
-      `"${r.district}"`,
-      `"${r.mandali}"`,
-      `"${r.village}"`,
+      r.district === "N/A" ? "" : `"${r.district}"`,
+      r.mandali === "N/A" ? "" : `"${r.mandali}"`,
+      r.village === "N/A" ? "" : `"${r.village}"`,
       r.amount || 0,
       r.paymentMethod,
       r.paymentStatus,
@@ -264,8 +264,8 @@ export default function RegistrationsPage() {
                     {r.email && <div style={{fontSize:"0.8rem", color:"#6B7280"}}>{r.email}</div>}
                   </td>
                   <td>
-                    <div>{r.village}, {r.mandali}</div>
-                    <div style={{fontSize:"0.8rem", color:"#6B7280"}}>{r.district}</div>
+                    <div>{[r.village, r.mandali].filter(x => x && x !== "N/A").join(", ")}</div>
+                    <div style={{fontSize:"0.8rem", color:"#6B7280"}}>{r.district !== "N/A" ? r.district : ""}</div>
                   </td>
                   <td>
                     <div style={{fontWeight: 600, color: "#111827"}}>₹{r.amount || 0}</div>
@@ -328,7 +328,7 @@ export default function RegistrationsPage() {
                 <div className="mc-meta">
                   <div className="mc-meta-row"><span style={{width:"20px"}}>📞</span> {r.mobile}</div>
                   {r.email && <div className="mc-meta-row"><span style={{width:"20px"}}>✉️</span> {r.email}</div>}
-                  <div className="mc-meta-row"><span style={{width:"20px"}}>📍</span> {r.village}, {r.mandali} ({r.district})</div>
+                  <div className="mc-meta-row"><span style={{width:"20px"}}>📍</span> {[r.village, r.mandali, r.district !== "N/A" ? `(${r.district})` : null].filter(x => x && x !== "N/A").join(" ")}</div>
                   <div className="mc-meta-row"><span style={{width:"20px"}}>💰</span> ₹{r.amount || 0}</div>
                   <div className="mc-meta-row"><span style={{width:"20px"}}>💳</span> {r.paymentMethod === 'online' ? 'Online' : 'Cash'} {r.txnId ? `• ${r.txnId}` : ''}</div>
                 </div>

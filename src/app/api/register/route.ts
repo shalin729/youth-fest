@@ -35,20 +35,21 @@ export async function POST(req: NextRequest) {
     const settings = await Settings.findOneAndUpdate(
       {},
       { $inc: { lastRegSeq: 1 } },
-      { new: true, upsert: true, setDefaultsOnInsert: true }
-    );
+      { new: true, upsert: true, setDefaultsOnInsert: true, strict: false }
+    ).lean();
     const fee = paymentMethod === "cash" ? (settings.cashFee || 10) : (settings.onlineFee || 10);
 
-    const regId = "REG-" + settings.lastRegSeq.toString().padStart(4, '0');
+    const seq = settings.lastRegSeq || 1;
+    const regId = "REG-" + seq.toString().padStart(4, '0');
 
     const registration = await Registration.create({
       regId,
       name,
       mobile,
       email: email || "N/A",
-      village,
-      district,
-      mandali,
+      village: village || "N/A",
+      district: district || "N/A",
+      mandali: mandali || "N/A",
       paymentMethod,
       paymentStatus: paymentMethod === "cash" ? "pending" : txnId ? "paid" : "pending",
       txnId: txnId || "",
@@ -120,7 +121,10 @@ export async function PATCH(req: NextRequest) {
     const fee = paymentMethod === "cash" ? (settings.cashFee || 10) : (settings.onlineFee || 10);
     
     let updateData: any = {
-      name, mobile, email: email || "N/A", village, district, mandali,
+      name, mobile, email: email || "N/A", 
+      village: village || "N/A", 
+      district: district || "N/A", 
+      mandali: mandali || "N/A",
       paymentMethod, amount: fee, customField1, customField2
     };
 

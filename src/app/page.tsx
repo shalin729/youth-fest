@@ -7,7 +7,9 @@ type Step = 1 | 2 | 3;
 type PayMethod = "online" | "cash";
 
 interface FormData {
-  name: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   mobile: string;
   email: string;
   district: District | "";
@@ -37,7 +39,7 @@ declare global {
 }
 
 const EMPTY_FORM: FormData = {
-  name: "", mobile: "", email: "",
+  firstName: "", middleName: "", lastName: "", mobile: "", email: "",
   district: "", village: "", mandali: "",
   paymentMethod: "online", txnId: "",
   customField1: "", customField2: "",
@@ -86,7 +88,18 @@ export default function RegisterPage() {
       const savedForm = sessionStorage.getItem("yf_form");
       const savedRegId = sessionStorage.getItem("yf_regId");
       if (savedStep) setStep(Number(savedStep) as Step);
-      if (savedForm) setForm(JSON.parse(savedForm));
+      if (savedForm) {
+        const parsed = JSON.parse(savedForm);
+        // Migration for users who had a single 'name' in session storage
+        if (parsed.name && !parsed.firstName) {
+          const parts = parsed.name.split(" ");
+          parsed.firstName = parts[0] || "";
+          parsed.middleName = parts.length > 2 ? parts[1] : "";
+          parsed.lastName = parts.length > 2 ? parts.slice(2).join(" ") : (parts[1] || "");
+          delete parsed.name;
+        }
+        setForm(parsed);
+      }
       if (savedRegId) setRegId(savedRegId);
     } catch (e) {
       console.error("Failed to load session state", e);
@@ -155,7 +168,11 @@ export default function RegisterPage() {
 
   const validate1 = () => {
     const e: Errors = {};
-    if (!form.name.trim() || form.name.trim().length < 2) e.name = "Please enter your full name";
+    if (!form.firstName.trim() || !form.middleName.trim() || !form.lastName.trim()) {
+      e.name = "Please enter your First, Middle, and Last name";
+    } else if (form.firstName.trim().length < 3) {
+      e.name = "First name must be at least 3 letters";
+    }
     if (!/^[6-9]\d{9}$/.test(form.mobile)) e.mobile = "Enter valid 10-digit mobile number";
     
     if (settings?.fieldsConfig?.email?.required && (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))) e.email = "Enter valid email address";
@@ -176,7 +193,7 @@ export default function RegisterPage() {
     try {
       const payload = {
         regId: regId || undefined,
-        name: form.name, mobile: form.mobile, email: form.email,
+        name: `${form.firstName.trim()} ${form.middleName.trim()} ${form.lastName.trim()}`, mobile: form.mobile, email: form.email,
         district: form.district, village: form.village, mandali: form.mandali,
         paymentMethod: form.paymentMethod
       };
@@ -210,7 +227,7 @@ export default function RegisterPage() {
       const orderRes  = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: form.name, mobile: form.mobile }),
+        body: JSON.stringify({ name: `${form.firstName.trim()} ${form.middleName.trim()} ${form.lastName.trim()}`, mobile: form.mobile }),
       });
       const orderData = await orderRes.json();
       if (!orderRes.ok) {
@@ -228,7 +245,7 @@ export default function RegisterPage() {
         description: `Registration • ₹${settings?.onlineFee || 10}`,
         order_id:    orderData.orderId,
         prefill: {
-          name:    form.name,
+          name:    `${form.firstName.trim()} ${form.middleName.trim()} ${form.lastName.trim()}`,
           contact: form.mobile,
           email:   form.email || undefined,
         },
@@ -266,7 +283,7 @@ export default function RegisterPage() {
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature:  response.razorpay_signature,
                 regId,
-                name: form.name, mobile: form.mobile, email: form.email,
+                name: `${form.firstName.trim()} ${form.middleName.trim()} ${form.lastName.trim()}`, mobile: form.mobile, email: form.email,
                 district: form.district, village: form.village, mandali: form.mandali,
               }),
             });
@@ -309,7 +326,7 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           regId: regId || undefined,
-          name: form.name, mobile: form.mobile, email: form.email,
+          name: `${form.firstName.trim()} ${form.middleName.trim()} ${form.lastName.trim()}`, mobile: form.mobile, email: form.email,
           district: form.district, village: form.village, mandali: form.mandali,
           paymentMethod: "cash",
           confirmCash: true,
@@ -364,9 +381,15 @@ export default function RegisterPage() {
         <div className={styles.card}>
           <div className={styles.sectionTitle}>{settings?.personalInfoHeading || "📝 Personal Information"}</div>
 
-          <Field label="Full Name" required error={errors.name}>
-            <input placeholder="Enter your full name" value={form.name}
-              onChange={e => set("name", e.target.value)} className={errors.name ? styles.inputError : ""} />
+          <Field label="Full Name (First, Middle, Last)" required error={errors.name}>
+            <div style={{display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px"}}>
+              <input placeholder="First Name" value={form.firstName}
+                onChange={e => set("firstName", e.target.value)} className={errors.name && !form.firstName.trim() ? styles.inputError : ""} />
+              <input placeholder="Middle Name" value={form.middleName}
+                onChange={e => set("middleName", e.target.value)} className={errors.name && !form.middleName.trim() ? styles.inputError : ""} />
+              <input placeholder="Last Name" value={form.lastName}
+                onChange={e => set("lastName", e.target.value)} className={errors.name && !form.lastName.trim() ? styles.inputError : ""} />
+            </div>
           </Field>
 
           <Field label="Mobile Number" required error={errors.mobile}>
@@ -617,7 +640,7 @@ export default function RegisterPage() {
               <div className={styles.regIdVal}>{regId}</div>
             </div>
             <div className={styles.successMeta}>
-              <div>👤 {form.name}</div>
+              <div>👤 {form.firstName} {form.middleName} {form.lastName}</div>
               <div>📱 {form.mobile}</div>
               <div>🗺️ {form.district}</div>
               <div>🏘️ {form.village}, {form.mandali}</div>
