@@ -32,11 +32,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Input fields exceed maximum length" }, { status: 400 });
     }
 
-    const settings = await Settings.findOneAndUpdate(
+    const settings = (await Settings.findOneAndUpdate(
       {},
       { $inc: { lastRegSeq: 1 } },
       { new: true, upsert: true, setDefaultsOnInsert: true, strict: false }
-    ).lean();
+    ).lean()) as any;
     const fee = paymentMethod === "cash" ? (settings.cashFee || 10) : (settings.onlineFee || 10);
 
     const seq = settings.lastRegSeq || 1;
