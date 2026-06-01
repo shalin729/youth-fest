@@ -362,11 +362,6 @@ export default function AdminPage() {
             </div>
             */}
             
-            <div style={{display:"flex", justifyContent:"flex-end", marginTop:"24px", paddingTop:"16px", borderTop:"1px solid #E5E7EB"}}>
-              <button className="btn btn-primary" onClick={saveSettings} disabled={savingSettings}>
-                {savingSettings ? "Saving Settings..." : "Save Settings"}
-              </button>
-            </div>
           </div>
         )}
       </div>

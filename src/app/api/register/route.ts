@@ -128,6 +128,10 @@ export async function PATCH(req: NextRequest) {
       paymentMethod, amount: fee, customField1, customField2
     };
 
+    if (paymentMethod === "cash") {
+      updateData.paymentStatus = "pending";
+    }
+
     if (confirmCash) {
       updateData.isDraft = false;
     }

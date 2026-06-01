@@ -215,7 +215,7 @@ export default function RegistrationsPage() {
             <button className="btn btn-outline" style={{borderColor: '#10B981', color: '#047857'}} onClick={exportToCSV}>
               Export CSV
             </button>
-            <button className="btn btn-primary" onClick={() => { setShowModal("add"); setModalData({ paymentMethod: "cash", paymentStatus: "paid" }); }}>
+            <button className="btn btn-primary" onClick={() => { setShowModal("add"); setModalData({ paymentMethod: "cash", paymentStatus: "pending" }); }}>
               + Add New
             </button>
           </div>
